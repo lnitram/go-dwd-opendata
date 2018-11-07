@@ -1,5 +1,9 @@
 package main
 
+/*
+	Reads the station list from the 2 excel files and generates json to be used by other packages
+*/
+
 import (
 	"encoding/json"
 	"fmt"
@@ -24,6 +28,7 @@ type Station struct {
 
 func main() {
 	downloadFiles()
+	os.Remove("./stations.json")
 	generateJson("./ha.xls", "HA")
 	generateJson("./na.xls", "NA")
 }
@@ -80,7 +85,7 @@ func getNAStation(row []string) Station {
 }
 
 func generateJson(filename string, format string) {
-	f, _ := os.Create("./stations.json")
+	f, _ := os.OpenFile("./stations.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	defer f.Close()
 
 	header := ""
