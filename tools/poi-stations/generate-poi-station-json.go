@@ -28,7 +28,7 @@ type Station struct {
 
 func main() {
 	downloadFiles()
-	os.Remove("./stations.json")
+	os.Remove("../../res/stations.json")
 	generateJson("./ha.xls", "HA")
 	generateJson("./na.xls", "NA")
 }
@@ -85,7 +85,7 @@ func getNAStation(row []string) Station {
 }
 
 func generateJson(filename string, format string) {
-	f, _ := os.OpenFile("./stations.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	f, _ := os.OpenFile("../../res/stations.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	defer f.Close()
 
 	header := ""
