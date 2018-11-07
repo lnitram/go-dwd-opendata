@@ -11,6 +11,17 @@ func main() {
 	downloadFiles()
 }
 
+func fileExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return true, err
+}
+
 func downloadFiles() {
 	fileUrlHA := "https://www.dwd.de/DE/leistungen/opendata/help/stationen/ha_messnetz.xls?__blob=publicationFile&v=1"
 	fileUrlNA := "https://www.dwd.de/DE/leistungen/opendata/help/stationen/na_messnetz.xls?__blob=publicationFile&v=9"
@@ -25,6 +36,10 @@ func downloadFiles() {
 }
 
 func DownloadFile(filepath string, url string) error {
+	if exists, _ := fileExists(filepath); exists {
+		fmt.Println("File", filepath, "already exists, skipping download ...")
+		return nil
+	}
 	out, err := os.Create(filepath)
 	if err != nil {
 		return err
