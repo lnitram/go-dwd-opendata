@@ -80,6 +80,9 @@ func getNAStation(row []string) Station {
 }
 
 func generateJson(filename string, format string) {
+	f, _ := os.Create("./stations.json")
+	defer f.Close()
+
 	header := ""
 	if format == "HA" {
 		header = "ID,Stations-Name,WMO-Kennung,BG,BM,BS,LG,LM,LS,GEOGR_BREITE,GEOGR_LAENGE,STATIONSHOEHE,Betreiber,Melde-Grp,Country"
@@ -103,8 +106,7 @@ func generateJson(filename string, format string) {
 		row := all[i]
 		s := getStation(row, format)
 		b, _ := json.Marshal(s)
-		fmt.Println(string(b))
-
+		f.WriteString(string(b) + "\n")
 	}
 }
 
