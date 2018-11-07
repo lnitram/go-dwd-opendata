@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"strconv"
 )
 
@@ -27,30 +28,25 @@ func main() {
 	generateNAJson()
 }
 
-func checkFormatNA(row []string) bool {
+func checkFormat(row []string, format string) bool {
+	expected := strings.Split(format,",")
+
+	if len(expected) != len(row) {
+		fmt.Println("unknown format: number of fields does not match")
+		return false
+	}
+
+	for i:= 0; i < len(expected); i++ {
+		if expected[i] != row[i] {
+			fmt.Println("unknown format: field does not match:",i,expected[i],row[i])
+			return false
+		}
+	}
 	return true
 }
 
-func checkFormatHA(row []string) bool {
-	return row[0] == "ID" &&
-		row[1] == "Stations-Name" &&
-		row[2] == "WMO-Kennung" &&
-		row[3] == "BG" &&
-		row[4] == "BM" &&
-		row[5] == "BS" &&
-		row[6] == "LG" &&
-		row[7] == "LM" &&
-		row[8] == "LS" &&
-		row[9] == "GEOGR_BREITE" &&
-		row[10] == "GEOGR_LAENGE" &&
-		row[11] == "STATIONSHOEHE" &&
-		row[12] == "Betreiber" &&
-		row[13] == "Melde-Grp" &&
-		row[14] == "Country"
-
-}
-
 func generateHAJson() {
+	haFormat := "ID,Stations-Name,WMO-Kennung,BG,BM,BS,LG,LM,LS,GEOGR_BREITE,GEOGR_LAENGE,STATIONSHOEHE,Betreiber,Melde-Grp,Country"
 	xls, err := xls.Open("./ha.xls", "utf-8")
 	if err != nil {
 		fmt.Println(err)
@@ -59,7 +55,7 @@ func generateHAJson() {
 
 	all := xls.ReadAllCells(1000000)
 	headlines := all[0]
-	if !checkFormatHA(headlines) {
+	if !checkFormat(headlines, haFormat) {
 		panic("Unknown format")
 	}
 	for i := 1; i < len(all); i++ {
@@ -78,8 +74,8 @@ func generateHAJson() {
 	}
 }
 
-// [STATIONSKENNUNG STATIONSNAME STATIONS_ID MaxvonGERAETETYP_NAME MinvonVON_DATUM GEOGR_BREITE GEOGR_LAENGE STATIONSHOEHE Niederschlag 1 Min Schnee manuell Wind 10 Min Temperatur und Feuchte 2 m 10 Min Sonne 10 Min Erdbodentemperaturen Standard 10 Min HEADING_BUFR1 HEADING_BUFR2 HEADING_BUFR3 HEADING_BUFR4 HEADING_BUFR5 HEADING_BUFR6 HEADING_BUFR7]
 func generateNAJson() {
+	naFormat := "STATIONSKENNUNG,STATIONSNAME,STATIONS_ID,MaxvonGERAETETYP_NAME,MinvonVON_DATUM,GEOGR_BREITE,GEOGR_LAENGE,STATIONSHOEHE,Niederschlag 1 Min,Schnee manuell,Wind 10 Min,Temperatur und Feuchte 2 m 10 Min,Sonne 10 Min,Erdbodentemperaturen Standard 10 Min,HEADING_BUFR1,HEADING_BUFR2,HEADING_BUFR3,HEADING_BUFR4,HEADING_BUFR5,HEADING_BUFR6,HEADING_BUFR7"
 	xls, err := xls.Open("./na.xls", "utf-8")
 	if err != nil {
 		fmt.Println(err)
@@ -88,7 +84,7 @@ func generateNAJson() {
 
 	all := xls.ReadAllCells(1000000)
 	headlines := all[0]
-	if !checkFormatNA(headlines) {
+	if !checkFormat(headlines, naFormat) {
 		panic("Unknown format")
 	}
 
