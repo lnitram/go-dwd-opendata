@@ -45,6 +45,40 @@ func checkFormat(row []string, format string) bool {
 	return true
 }
 
+func getStation(row []string, format string) Station {
+	if format == "HA" {
+		return getHAStation(row)
+	} else if format == "NA" {
+		return getNAStation(row)
+	}
+	return Station{}
+}
+
+func getHAStation(row []string) Station {
+	id, _ := strconv.Atoi(row[0])
+	name := row[1]
+	kennung := row[2]
+	lat, _ := strconv.ParseFloat(row[9], 64)
+	lon, _ := strconv.ParseFloat(row[10], 64)
+	height, _ := strconv.ParseFloat(row[11], 64)
+	owner := row[12]
+	country := row[14]
+	return Station{id, name, kennung, lat, lon, height, owner, country}
+}
+
+func getNAStation(row []string) Station {
+	id, _ := strconv.Atoi(row[2])
+	name := row[1]
+	kennung := row[0]
+	lat, _ := strconv.ParseFloat(row[5], 64)
+	lon, _ := strconv.ParseFloat(row[6], 64)
+	height, _ := strconv.ParseFloat(row[7], 64)
+	owner := ""
+	country := ""
+	return Station{id, name, kennung, lat, lon, height, owner, country}
+
+}
+
 func generateJson(filename string, format string) {
 	header := ""
 	if format == "HA" {
@@ -65,36 +99,11 @@ func generateJson(filename string, format string) {
 		panic("Unknown format")
 	}
 
-	if format == "HA" {
-		for i := 1; i < len(all); i++ {
-			row := all[i]
-			id, _ := strconv.Atoi(row[0])
-			name := row[1]
-			kennung := row[2]
-			lat, _ := strconv.ParseFloat(row[9], 64)
-			lon, _ := strconv.ParseFloat(row[10], 64)
-			height, _ := strconv.ParseFloat(row[11], 64)
-			owner := row[12]
-			country := row[14]
-			s := Station{id, name, kennung, lat, lon, height, owner, country}
-			b, _ := json.Marshal(s)
-			fmt.Println(string(b))
-		}
-	} else if format == "NA" {
-		for i := 1; i < len(all); i++ {
-			row := all[i]
-			id, _ := strconv.Atoi(row[2])
-			name := row[1]
-			kennung := row[0]
-			lat, _ := strconv.ParseFloat(row[5], 64)
-			lon, _ := strconv.ParseFloat(row[6], 64)
-			height, _ := strconv.ParseFloat(row[7], 64)
-			owner := ""
-			country := ""
-			s := Station{id, name, kennung, lat, lon, height, owner, country}
-			b, _ := json.Marshal(s)
-			fmt.Println(string(b))
-		}
+	for i := 1; i < len(all); i++ {
+		row := all[i]
+		s := getStation(row, format)
+		b, _ := json.Marshal(s)
+		fmt.Println(string(b))
 
 	}
 }
