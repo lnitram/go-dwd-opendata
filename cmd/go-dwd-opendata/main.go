@@ -6,9 +6,6 @@ import (
 )
 
 func main() {
-	poi.GenerateStationFile()
-
-
 	poi.LoadDB("../../res/stations.json")
 	station, weather := poi.GetWeatherByName("Hamburg")
 	fmt.Println("Station              :", station.Name)
