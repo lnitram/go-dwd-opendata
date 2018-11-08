@@ -32,72 +32,39 @@ type WeatherData struct {
 }
 
 func getPresentWeather(code int) string {
-	switch code {
-	case 1:
-		return "wolkenlos"
-	case 2:
-		return "heiter"
-	case 3:
-		return "bewoelkt"
-	case 4:
-		return "bedeckt"
-	case 5:
-		return "Nebel"
-	case 6:
-		return "gefrierender Nebel"
-	case 7:
-		return "leichter Regen"
-	case 8:
-		return "Regen"
-	case 9:
-		return "kraeftiger Regen"
-	case 10:
-		return "gefrierender Regen"
-	case 11:
-		return "kraeftiger gefrierender Regen"
-	case 12:
-		return "Schneeregen"
-	case 13:
-		return "kraeftiger Schneeregen"
-	case 14:
-		return "leichter Schneefall"
-	case 15:
-		return "Schneefall"
-	case 16:
-		return "kraeftiger Schneefall"
-	case 17:
-		return "Eiskoerner"
-	case 18:
-		return "Regenschauer"
-	case 19:
-		return "kraeftiger Regenschauer"
-	case 20:
-		return "Schneeregenschauer"
-	case 21:
-		return "kraeftiger Schneeregenschauer"
-	case 22:
-		return "Schneeschauer"
-	case 23:
-		return "kraeftiger Schneeschauer"
-	case 24:
-		return "Graupelschauer"
-	case 25:
-		return "kraeftiger Graupelschauer"
-	case 26:
-		return "Gewitter ohne Niederschlag"
-	case 27:
-		return "Gewitter"
-	case 28:
-		return "kraeftiges Gewitter"
-	case 29:
-		return "Gewitter mit Hagel"
-	case 30:
-		return "kraeftiges Gewitter mit Hagel"
-	case 31:
-		return "Boen"
-	default:
-		return "---"
-	}
+	codes := map[int]string{
+		1:  "wolkenlos",
+		2:  "heiter",
+		3:  "bewoelkt",
+		4:  "bedeckt",
+		5:  "Nebel",
+		6:  "gefrierender Nebel",
+		7:  "leichter Regen",
+		8:  "Regen",
+		9:  "kraeftiger Regen",
+		10: "gefrierender Regen",
+		11: "kraeftiger gefrierender Regen",
+		12: "Schneeregen",
+		13: "kraeftiger Schneeregen",
+		14: "leichter Schneefall",
+		15: "Schneefall",
+		16: "kraeftiger Schneefall",
+		17: "Eiskoerner",
+		18: "Regenschauer",
+		19: "kraeftiger Regenschauer",
+		20: "Schneeregenschauer",
+		21: "kraeftiger Schneeregenschauer",
+		22: "Schneeschauer",
+		23: "kraeftiger Schneeschauer",
+		24: "Graupelschauer",
+		25: "kraeftiger Graupelschauer",
+		26: "Gewitter ohne Niederschlag",
+		27: "Gewitter",
+		28: "kraeftiges Gewitter",
+		29: "Gewitter mit Hagel",
+		30: "kraeftiges Gewitter mit Hagel",
+		31: "Boen"}
+	return codes[code]
 }
 
 func FindStationByName(name string) Station {
