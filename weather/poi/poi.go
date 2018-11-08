@@ -1,36 +1,35 @@
 package poi
 
 import (
-        "io/ioutil"
-        "log"
-	"os"
 	"bufio"
-        "fmt"
-        "net/http"
 	"encoding/json"
-        "strings"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"strings"
 )
 
 type Station struct {
-        ID      int
-        Name    string
-        Kennung string
-        Lat     float64
-        Lon     float64
-        Height  float64
-        Owner   string
-        Country string
+	ID      int
+	Name    string
+	Kennung string
+	Lat     float64
+	Lon     float64
+	Height  float64
+	Owner   string
+	Country string
 }
-
 
 var poiDB []Station
 
 func FindStationByName(name string) Station {
-	for _,v := range poiDB {
-		if strings.Contains(strings.ToLower(v.Name),strings.ToLower(name)) {
+	for _, v := range poiDB {
+		if strings.Contains(strings.ToLower(v.Name), strings.ToLower(name)) {
 			return v
 		}
-        }
+	}
 	return Station{}
 }
 
@@ -47,55 +46,54 @@ func LoadDB(filename string) {
 		row := scanner.Text()
 		res := Station{}
 		json.Unmarshal([]byte(row), &res)
-		poiDB = append(poiDB,res)
+		poiDB = append(poiDB, res)
 	}
 }
 
 func downloadTextFile(url string) string {
-        resp, err := http.Get(url)
-        if err != nil {
-                log.Println("Error:", err)
-                return ""
-        }
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Println("Error:", err)
+		return ""
+	}
 
-        if resp.StatusCode != 200 {
-                log.Println("Download failed:", url, resp.StatusCode)
-                return ""
-        }
-        contents, err := ioutil.ReadAll(resp.Body)
-        if err != nil {
-                log.Println("Error:", err)
-                return ""
-        }
-        return string(contents)
+	if resp.StatusCode != 200 {
+		log.Println("Download failed:", url, resp.StatusCode)
+		return ""
+	}
+	contents, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Error:", err)
+		return ""
+	}
+	return string(contents)
 }
 
 func GetWeather(url string) map[string]WeatherData {
-        csv := downloadTextFile(url)
-        lines := strings.Split(csv, "\n")
-        if len(lines) < 3 {
-                log.Println("Invalid csv file", url)
-                return nil
-        }
-        weather := make(map[string]WeatherData)
-        headlines := strings.Split(lines[0], ";")
-        units := strings.Split(lines[1], ";")
-        descriptions := strings.Split(lines[2], ";")
-        values := strings.Split(lines[3], ";")
-        for i := 0; i < len(headlines); i++ {
-                weather[headlines[i]] = WeatherData{headlines[i], descriptions[i], units[i], values[i]}
-        }
-        return weather
+	csv := downloadTextFile(url)
+	lines := strings.Split(csv, "\n")
+	if len(lines) < 3 {
+		log.Println("Invalid csv file", url)
+		return nil
+	}
+	weather := make(map[string]WeatherData)
+	headlines := strings.Split(lines[0], ";")
+	units := strings.Split(lines[1], ";")
+	descriptions := strings.Split(lines[2], ";")
+	values := strings.Split(lines[3], ";")
+	for i := 0; i < len(headlines); i++ {
+		weather[headlines[i]] = WeatherData{headlines[i], descriptions[i], units[i], values[i]}
+	}
+	return weather
 }
 
 type WeatherData struct {
-        Headline    string
-        Description string
-        Unit        string
-        Value       string
+	Headline    string
+	Description string
+	Unit        string
+	Value       string
 }
 
 func (w WeatherData) String() string {
-        return fmt.Sprintf("%v (%v): %v %v", w.Headline, w.Description, w.Value, w.Unit)
+	return fmt.Sprintf("%v (%v): %v %v", w.Headline, w.Description, w.Value, w.Unit)
 }
-
