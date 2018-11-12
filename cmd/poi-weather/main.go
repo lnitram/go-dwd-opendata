@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/lnitram/go-dwd-opendata/weather/poi"
+	"github.com/lnitram/go-dwd-opendata/weather/weather_reports/poi"
 )
 
 func main() {
