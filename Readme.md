@@ -8,7 +8,7 @@ go get github.com/extrame/xls
 
 Packages:
 ```
-weather/poi
+weather/weather_reports/poi
 - GenerateStationFile()
     - Reads both excel files with station information from DWD server
     - Stores them as ha.xls and na.xls in current directory
